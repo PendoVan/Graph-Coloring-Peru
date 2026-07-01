@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Proyecto 9 — Graph Coloring Perú
+# Gráficas y reportes generados automáticamente por runner.py
+data/*.png
+data/*.pdf
+
+# Resultados de benchmarking (CSV grandes, generados en Fase B)
+# Comenta estas líneas si quieres versionar los CSV para el informe
+# data/*.csv
