@@ -1,1 +1,0 @@
-matplotlib>=3.8   # solo para las graficas del benchmark (runner.py --plots)

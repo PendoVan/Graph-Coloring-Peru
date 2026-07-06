@@ -8,7 +8,7 @@
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <QTreeWidget>
+#include <QTableWidget>
 #include <QLabel>
 #include <QTimer>
 #include "../core/Graph.h"
@@ -55,7 +55,7 @@ private:
     QLabel *lblResultTime;
     QLabel *lblResultProper;
     
-    QTreeWidget *treeFreq;
+    QTableWidget *tableFreq;
     QLabel *lblHint;
 
     std::unordered_map<int, std::vector<QGraphicsPolygonItem*>> polyItems;

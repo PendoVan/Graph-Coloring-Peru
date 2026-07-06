@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\build\CMakeFiles\74e7f428cdc5818b331671101bebb25e\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{ACD48E85-0860-3C8B-8B6E-F608A5BF9E23}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

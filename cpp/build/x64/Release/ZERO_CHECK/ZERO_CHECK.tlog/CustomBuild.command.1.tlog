@@ -1,0 +1,10 @@
+^C:\USERS\ACF12\DOCUMENTS\AAAADRIAAAAN\1-UNIVERSIDAD\5TO CICLO\ANALISIS Y DISEÑO DE ALGORITMOS\ADA-PROYECTO\CPP\BUILD\CMAKEFILES\74E7F428CDC5818B331671101BEBB25E\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SC:/Users/acf12/Documents/AAAADRIAAAAN/1-UNIVERSIDAD/5to ciclo/Analisis y diseño de algoritmos/ADA-Proyecto/cpp" "-BC:/Users/acf12/Documents/AAAADRIAAAAN/1-UNIVERSIDAD/5to ciclo/Analisis y diseño de algoritmos/ADA-Proyecto/cpp/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/acf12/Documents/AAAADRIAAAAN/1-UNIVERSIDAD/5to ciclo/Analisis y diseño de algoritmos/ADA-Proyecto/cpp/build/GraphColoringPeru.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

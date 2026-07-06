@@ -153,11 +153,16 @@ void MapTab::buildUI() {
     
     QGroupBox *grpTable = new QGroupBox("Departamentos por frecuencia");
     QVBoxLayout *tableLayout = new QVBoxLayout();
-    treeFreq = new QTreeWidget();
-    treeFreq->setColumnCount(2);
-    treeFreq->setHeaderLabels({"frec.", "departamentos"});
-    treeFreq->header()->resizeSection(0, 50);
-    tableLayout->addWidget(treeFreq);
+    tableFreq = new QTableWidget(0, 2);
+    tableFreq->setHorizontalHeaderLabels({"frec.", "departamentos"});
+    tableFreq->horizontalHeader()->resizeSection(0, 50);
+    tableFreq->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    tableFreq->setWordWrap(true);
+    tableFreq->setTextElideMode(Qt::ElideNone);
+    tableFreq->setAlternatingRowColors(true);
+    tableFreq->verticalHeader()->setVisible(false); // Hide row numbers
+    tableFreq->setSelectionMode(QAbstractItemView::NoSelection);
+    tableLayout->addWidget(tableFreq);
     grpTable->setLayout(tableLayout);
     rightLayout->addWidget(grpTable);
     
@@ -261,17 +266,24 @@ void MapTab::updateResults(const QString& algo, const QString& colors, const QSt
 }
 
 void MapTab::updateTable() {
-    treeFreq->clear();
+    tableFreq->setRowCount(0);
     if (coloring.empty()) return;
     
     auto table = PeruMap::instance().frequency_table(graph, coloring);
     for (const auto& pair : table) {
         QStringList deps;
         for (const auto& d : pair.second) deps << QString::fromStdString(d);
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeFreq);
-        item->setText(0, "f" + QString::number(pair.first));
-        item->setText(1, deps.join(", "));
+        
+        int row = tableFreq->rowCount();
+        tableFreq->insertRow(row);
+        
+        QTableWidgetItem *item1 = new QTableWidgetItem("f" + QString::number(pair.first));
+        QTableWidgetItem *item2 = new QTableWidgetItem(deps.join(", "));
+        
+        tableFreq->setItem(row, 0, item1);
+        tableFreq->setItem(row, 1, item2);
     }
+    tableFreq->resizeRowsToContents();
 }
 
 void MapTab::fillPolygon(int dep, const QColor& color) {
@@ -321,10 +333,11 @@ void MapTab::drawMap() {
         }
         
         QPen pen(QColor("#555555"));
-        pen.setWidth(0); // Cosmetic pen
+        pen.setWidth(0); // Cosmetic pen for normal departments
         if (dep == sourceId) {
             pen.setColor(QColor("#111111"));
-            pen.setWidth(3);
+            pen.setWidth(2);
+            pen.setCosmetic(true); // Prevent border from becoming giant on zoom
         }
         
         for (const auto& poly : r.second) {
