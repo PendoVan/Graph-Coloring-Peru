@@ -40,6 +40,9 @@
     <ClCompile Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\src\gui\DocsTab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\src\gui\RecursosTab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\build\GraphColoringPeru_autogen\mocs_compilation_Release.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

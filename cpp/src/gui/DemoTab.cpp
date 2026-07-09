@@ -45,7 +45,7 @@ void DemoTab::runDemo() {
     ss << "  nodo = departamento (antena) | arista = frontera (interferencia)\n";
     ss << "  color = frecuencia | objetivo: minimizar frecuencias = chi(G)\n\n";
     
-    auto linea = [&](const string& nombre, const unordered_map<int, int>& coloring, double ms, const string& extra = "") {
+    auto linea = [&](const string& nombre, const vector<int>& coloring, double ms, const string& extra = "") {
         bool ok = is_proper(g, coloring).valid;
         ss << "  " << left << setw(24) << nombre << " colores=" << num_colors(coloring) << "  "
            << (ok ? "valida  " : "INVALIDA") << right << setw(7) << fixed << setprecision(3) << ms << " ms  " << extra << "\n";

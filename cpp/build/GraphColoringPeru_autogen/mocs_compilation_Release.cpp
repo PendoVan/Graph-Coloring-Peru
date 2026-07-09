@@ -4,3 +4,4 @@
 #include <MXUWEOXILK/moc_DocsTab.cpp>
 #include <MXUWEOXILK/moc_MainWindow.cpp>
 #include <MXUWEOXILK/moc_MapTab.cpp>
+#include <MXUWEOXILK/moc_RecursosTab.cpp>

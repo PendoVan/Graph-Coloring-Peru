@@ -35,8 +35,8 @@ private:
 
     Graph graph;
     int sourceId;
-    std::unordered_map<int, int> coloring;
-    std::unordered_map<int, int> bfsLevels;
+    std::vector<int> coloring;
+    std::vector<int> bfsLevels;
 
     QGraphicsScene *scene;
     QGraphicsView *view;

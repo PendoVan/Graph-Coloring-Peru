@@ -36,10 +36,20 @@ double Benchmark::get_peak_memory_mb() {
     return 0.0;
 }
 
+double Benchmark::get_current_memory_mb() {
+#ifdef _WIN32
+    PROCESS_MEMORY_COUNTERS_EX pmc;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc))) {
+        return static_cast<double>(pmc.PrivateUsage) / (1024.0 * 1024.0);
+    }
+#endif
+    return 0.0;
+}
+
 template<typename Func>
-static tuple<double, double, unordered_map<int, int>> time_func(Func f, int reps) {
+static tuple<double, double, vector<int>> time_func(Func f, int reps) {
     vector<double> samples;
-    unordered_map<int, int> coloring;
+    vector<int> coloring;
     
     for (int i = 0; i < reps; ++i) {
         auto t0 = chrono::high_resolution_clock::now();
@@ -67,10 +77,10 @@ static vector<Row> bench_greedy_dsatur(const string& instance, const Graph& g, i
     vector<Row> rows;
     
     auto jobs = {
-        make_pair(string("greedy_natural"), function<unordered_map<int, int>()>([&](){ return greedy(g, order_natural(g)); })),
-        make_pair(string("greedy_largest_first"), function<unordered_map<int, int>()>([&](){ return greedy(g, order_largest_first(g)); })),
-        make_pair(string("greedy_smallest_last"), function<unordered_map<int, int>()>([&](){ return greedy(g, order_smallest_last(g)); })),
-        make_pair(string("dsatur"), function<unordered_map<int, int>()>([&](){ return dsatur(g); }))
+        make_pair(string("greedy_natural"), function<vector<int>()>([&](){ return greedy(g, order_natural(g)); })),
+        make_pair(string("greedy_largest_first"), function<vector<int>()>([&](){ return greedy(g, order_largest_first(g)); })),
+        make_pair(string("greedy_smallest_last"), function<vector<int>()>([&](){ return greedy(g, order_smallest_last(g)); })),
+        make_pair(string("dsatur"), function<vector<int>()>([&](){ return dsatur(g); }))
     };
     
     for (const auto& job : jobs) {

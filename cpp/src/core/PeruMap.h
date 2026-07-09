@@ -29,7 +29,7 @@ public:
     std::map<std::pair<int, int>, Route> routes() const;
     
     double geo_distance(int a, int b) const;
-    std::map<int, std::vector<std::string>> frequency_table(const Graph& graph, const std::unordered_map<int, int>& color) const;
+    std::map<int, std::vector<std::string>> frequency_table(const Graph& graph, const std::vector<int>& color) const;
 
 private:
     PeruMap() = default;

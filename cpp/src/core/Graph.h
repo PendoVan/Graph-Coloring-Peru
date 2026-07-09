@@ -17,7 +17,7 @@ public:
     
     static Graph from_edges(const std::vector<int>& vertices, const std::vector<std::pair<int, int>>& edges, const std::unordered_map<int, std::string>& labels = {});
 
-    const std::unordered_set<int>& neighbors(int v) const;
+    const std::vector<int>& neighbors(int v) const;
     int degree(int v) const;
     
     std::vector<int> vertices() const;
@@ -28,10 +28,13 @@ public:
     int n() const;
     int m() const;
     int max_degree() const;
+    int max_id() const;
 
 private:
-    std::unordered_map<int, std::unordered_set<int>> adj;
-    std::unordered_map<int, std::string> labels;
+    std::vector<std::vector<int>> adj;
+    std::vector<std::string> labels;
+    std::vector<bool> active;
+    int num_vertices = 0;
 };
 
 #endif // GRAPH_H

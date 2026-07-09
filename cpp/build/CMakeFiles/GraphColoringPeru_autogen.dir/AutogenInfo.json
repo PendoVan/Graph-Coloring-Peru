@@ -344,6 +344,12 @@
 			"MU",
 			"MXUWEOXILK/moc_MapTab.cpp",
 			null
+		],
+		[
+			"C:/Users/acf12/Documents/AAAADRIAAAAN/1-UNIVERSIDAD/5to ciclo/Analisis y dise\u00f1o de algoritmos/ADA-Proyecto/cpp/src/gui/RecursosTab.h",
+			"MU",
+			"MXUWEOXILK/moc_RecursosTab.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -573,6 +579,11 @@
 		],
 		[
 			"C:/Users/acf12/Documents/AAAADRIAAAAN/1-UNIVERSIDAD/5to ciclo/Analisis y dise\u00f1o de algoritmos/ADA-Proyecto/cpp/src/gui/MapTab.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/acf12/Documents/AAAADRIAAAAN/1-UNIVERSIDAD/5to ciclo/Analisis y dise\u00f1o de algoritmos/ADA-Proyecto/cpp/src/gui/RecursosTab.cpp",
 			"MU",
 			null
 		],

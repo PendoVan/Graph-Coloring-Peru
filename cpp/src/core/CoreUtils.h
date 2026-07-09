@@ -10,7 +10,7 @@ struct ProperResult {
     std::pair<int, int> edge;
 };
 
-ProperResult is_proper(const Graph& graph, const std::unordered_map<int, int>& color);
-int num_colors(const std::unordered_map<int, int>& color);
+ProperResult is_proper(const Graph& graph, const std::vector<int>& color);
+int num_colors(const std::vector<int>& color);
 
 #endif // COREUTILS_H

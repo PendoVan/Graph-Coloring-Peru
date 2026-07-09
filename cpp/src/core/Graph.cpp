@@ -3,8 +3,14 @@
 Graph::Graph() {}
 
 void Graph::add_vertex(int v, const std::string& label) {
-    if (adj.find(v) == adj.end()) {
-        adj[v] = std::unordered_set<int>();
+    if (v >= adj.size()) {
+        adj.resize(v + 1);
+        labels.resize(v + 1);
+        active.resize(v + 1, false);
+    }
+    if (!active[v]) {
+        active[v] = true;
+        num_vertices++;
     }
     if (!label.empty()) {
         labels[v] = label;
@@ -15,8 +21,12 @@ void Graph::add_edge(int u, int v) {
     add_vertex(u);
     add_vertex(v);
     if (u != v) {
-        adj[u].insert(v);
-        adj[v].insert(u);
+        // avoid duplicates if multigraph is not intended, but usually it's fine for simple graphs 
+        // to just check if it already exists or rely on generator
+        if (std::find(adj[u].begin(), adj[u].end(), v) == adj[u].end()) {
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
     }
 }
 
@@ -35,39 +45,38 @@ Graph Graph::from_edges(const std::vector<int>& vertices, const std::vector<std:
     return g;
 }
 
-const std::unordered_set<int>& Graph::neighbors(int v) const {
-    static const std::unordered_set<int> empty_set;
-    auto it = adj.find(v);
-    if (it != adj.end()) {
-        return it->second;
+const std::vector<int>& Graph::neighbors(int v) const {
+    static const std::vector<int> empty_set;
+    if (v < adj.size() && active[v]) {
+        return adj[v];
     }
     return empty_set;
 }
 
 int Graph::degree(int v) const {
-    auto it = adj.find(v);
-    if (it != adj.end()) {
-        return it->second.size();
+    if (v < adj.size() && active[v]) {
+        return adj[v].size();
     }
     return 0;
 }
 
 std::vector<int> Graph::vertices() const {
     std::vector<int> verts;
-    verts.reserve(adj.size());
-    for (const auto& pair : adj) {
-        verts.push_back(pair.first);
+    verts.reserve(num_vertices);
+    for (int i = 0; i < active.size(); ++i) {
+        if (active[i]) verts.push_back(i);
     }
     return verts;
 }
 
 std::vector<std::pair<int, int>> Graph::edges() const {
     std::vector<std::pair<int, int>> edge_list;
-    for (const auto& u_pair : adj) {
-        int u = u_pair.first;
-        for (int v : u_pair.second) {
-            if (u < v) {
-                edge_list.push_back({u, v});
+    for (int u = 0; u < adj.size(); ++u) {
+        if (active[u]) {
+            for (int v : adj[u]) {
+                if (u < v) {
+                    edge_list.push_back({u, v});
+                }
             }
         }
     }
@@ -75,31 +84,40 @@ std::vector<std::pair<int, int>> Graph::edges() const {
 }
 
 std::string Graph::label(int v) const {
-    auto it = labels.find(v);
-    if (it != labels.end()) {
-        return it->second;
+    if (v < labels.size() && !labels[v].empty()) {
+        return labels[v];
     }
     return std::to_string(v);
 }
 
 int Graph::n() const {
-    return adj.size();
+    return num_vertices;
 }
 
 int Graph::m() const {
     int total_edges = 0;
-    for (const auto& pair : adj) {
-        total_edges += pair.second.size();
+    for (int i = 0; i < adj.size(); ++i) {
+        if (active[i]) {
+            total_edges += adj[i].size();
+        }
     }
     return total_edges / 2;
 }
 
 int Graph::max_degree() const {
     int max_deg = 0;
-    for (const auto& pair : adj) {
-        if (pair.second.size() > max_deg) {
-            max_deg = pair.second.size();
+    for (int i = 0; i < adj.size(); ++i) {
+        if (active[i] && adj[i].size() > max_deg) {
+            max_deg = adj[i].size();
         }
     }
     return max_deg;
+}
+
+int Graph::max_id() const {
+    int max_i = -1;
+    for (int i = adj.size() - 1; i >= 0; --i) {
+        if (active[i]) { return i; }
+    }
+    return max_i;
 }

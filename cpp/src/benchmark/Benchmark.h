@@ -33,6 +33,7 @@ public:
     
     static void to_csv(const std::vector<Row>& rows, const std::string& path);
     static double get_peak_memory_mb();
+    static double get_current_memory_mb();
 };
 
 #endif // BENCHMARK_H

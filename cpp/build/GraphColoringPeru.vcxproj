@@ -453,6 +453,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\src\gui\DemoTab.cpp" />
     <ClCompile Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\src\gui\BenchTab.cpp" />
     <ClCompile Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\src\gui\DocsTab.cpp" />
+    <ClCompile Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\src\gui\RecursosTab.cpp" />
     <ClCompile Include="C:\Users\acf12\Documents\AAAADRIAAAAN\1-UNIVERSIDAD\5to ciclo\Analisis y diseño de algoritmos\ADA-Proyecto\cpp\build\GraphColoringPeru_autogen\mocs_compilation_Release.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</ExcludedFromBuild>

@@ -55,10 +55,10 @@ MapTab::MapTab(QWidget *parent) : QWidget(parent), animTimer(new QTimer(this)), 
         QColor targetColor;
         if (isDistanceMode) {
             int max_lvl = 1;
-            for(const auto& pair : bfsLevels) max_lvl = std::max(max_lvl, pair.second);
-            targetColor = distColor(static_cast<double>(bfsLevels[dep]) / std::max(1, max_lvl));
+            for(int lvl : bfsLevels) max_lvl = std::max(max_lvl, lvl);
+            targetColor = distColor(static_cast<double>(dep < bfsLevels.size() ? std::max(0, bfsLevels[dep]) : 0) / std::max(1, max_lvl));
         } else {
-            targetColor = freqColor(coloring[dep]);
+            targetColor = freqColor(dep < coloring.size() ? coloring[dep] : 0);
         }
         
         fillPolygon(dep, targetColor);
@@ -321,14 +321,14 @@ void MapTab::drawMap() {
     }
     
     int max_lvl = 1;
-    for(const auto& pair : bfsLevels) max_lvl = std::max(max_lvl, pair.second);
+    for(int lvl : bfsLevels) max_lvl = std::max(max_lvl, lvl);
 
     for (const auto& r : rings) {
         int dep = r.first;
         QColor color = QColor("#dddddd");
         if (btnModeDist->isChecked()) {
-            color = distColor(static_cast<double>(bfsLevels[dep]) / std::max(1, max_lvl));
-        } else if (coloring.count(dep)) {
+            color = distColor(static_cast<double>(dep < bfsLevels.size() ? std::max(0, bfsLevels[dep]) : 0) / std::max(1, max_lvl));
+        } else if (dep < coloring.size() && coloring[dep] != 0) {
             color = freqColor(coloring[dep]);
         }
         

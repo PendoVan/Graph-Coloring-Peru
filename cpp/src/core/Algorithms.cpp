@@ -29,38 +29,57 @@ vector<int> order_largest_first(const Graph& g) {
 }
 
 vector<int> order_smallest_last(const Graph& g) {
-    unordered_map<int, int> deg;
+    int max_id = g.max_id();
+    if (max_id < 0) return {};
+    
+    vector<int> deg(max_id + 1, 0);
     int max_deg = g.max_degree();
-    vector<unordered_set<int>> buckets(max_deg + 1);
+    
+    // Array-based doubly linked list for O(1) removal and insertion
+    vector<int> prev(max_id + 1, -1);
+    vector<int> next(max_id + 1, -1);
+    vector<int> head(max_deg + 1, -1);
     
     for (int v : g.vertices()) {
         int d = g.degree(v);
         deg[v] = d;
-        buckets[d].insert(v);
+        if (head[d] != -1) prev[head[d]] = v;
+        next[v] = head[d];
+        head[d] = v;
     }
     
-    unordered_set<int> removed;
+    vector<bool> removed(max_id + 1, false);
     vector<int> seq;
     seq.reserve(g.n());
     
     int i = 0;
     for (int count = 0; count < g.n(); ++count) {
-        while (i <= max_deg && buckets[i].empty()) {
+        while (i <= max_deg && head[i] == -1) {
             ++i;
         }
         if (i > max_deg) break;
         
-        int v = *buckets[i].begin();
-        buckets[i].erase(v);
-        removed.insert(v);
+        int v = head[i];
+        head[i] = next[v];
+        if (head[i] != -1) prev[head[i]] = -1;
+        
+        removed[v] = true;
         seq.push_back(v);
         
         for (int u : g.neighbors(v)) {
-            if (removed.find(u) == removed.end()) {
+            if (!removed[u]) {
                 int d = deg[u];
-                buckets[d].erase(u);
+                // Remove u from current bucket
+                if (prev[u] != -1) next[prev[u]] = next[u];
+                else head[d] = next[u];
+                if (next[u] != -1) prev[next[u]] = prev[u];
+                
+                // Add u to bucket d-1
                 deg[u] = d - 1;
-                buckets[d - 1].insert(u);
+                prev[u] = -1;
+                next[u] = head[d - 1];
+                if (head[d - 1] != -1) prev[head[d - 1]] = u;
+                head[d - 1] = u;
             }
         }
         i = max(0, i - 1);
@@ -105,11 +124,11 @@ vector<int> order_distance(const Graph& g, int source) {
     return seq;
 }
 
-unordered_map<int, int> bfs_levels(const Graph& g, int source) {
-    unordered_map<int, int> dist;
-    for (int v : g.vertices()) {
-        dist[v] = -1;
-    }
+vector<int> bfs_levels(const Graph& g, int source) {
+    int max_id = g.max_id();
+    if (max_id < 0) return {};
+    
+    vector<int> dist(max_id + 1, -1);
     dist[source] = 0;
     queue<int> q;
     q.push(source);
@@ -128,18 +147,23 @@ unordered_map<int, int> bfs_levels(const Graph& g, int source) {
     return dist;
 }
 
-unordered_map<int, int> greedy(const Graph& g, const vector<int>& order) {
-    unordered_map<int, int> color;
-    for (int v : g.vertices()) color[v] = 0;
+vector<int> greedy(const Graph& g, const vector<int>& order) {
+    int max_id = g.max_id();
+    if (max_id < 0) return {};
+    
+    vector<int> color(max_id + 1, 0);
+    vector<int> used(max_id + 2, -1); // color -> vertex id to know if used in current step
     
     for (int v : order) {
-        unordered_set<int> used;
         for (int u : g.neighbors(v)) {
-            if (color[u] > 0) used.insert(color[u]);
+            if (color[u] > 0) used[color[u]] = v;
         }
         int c = 1;
-        while (used.find(c) != used.end()) {
+        while (c < used.size() && used[c] == v) {
             ++c;
+        }
+        if (c >= used.size()) {
+            used.push_back(-1); // Expand if max colors exceeded
         }
         color[v] = c;
     }
@@ -157,14 +181,20 @@ struct DsaturNode {
     }
 };
 
-unordered_map<int, int> dsatur(const Graph& g) {
-    unordered_map<int, int> color;
-    unordered_map<int, unordered_set<int>> sat;
+vector<int> dsatur(const Graph& g) {
+    int max_id = g.max_id();
+    if (max_id < 0) return {};
+    
+    int max_deg = g.max_degree();
+    vector<int> color(max_id + 1, 0);
+    vector<int> sat_deg(max_id + 1, 0);
+    // Track if neighbor has color c: num_adj_color[u][c]
+    // Since colors never exceed max_deg + 1, we can size it
+    vector<vector<bool>> has_adj_color(max_id + 1, vector<bool>(max_deg + 2, false));
+    
     priority_queue<DsaturNode> pq;
     
     for (int v : g.vertices()) {
-        color[v] = 0;
-        sat[v] = unordered_set<int>();
         pq.push({0, g.degree(v), v});
     }
     
@@ -174,21 +204,22 @@ unordered_map<int, int> dsatur(const Graph& g) {
         pq.pop();
         
         int v = top.v;
-        if (color[v] > 0 || top.sat != (int)sat[v].size()) {
+        if (color[v] > 0 || top.sat != sat_deg[v]) {
             continue; // obsolete entry
         }
         
         int c = 1;
-        while (sat[v].find(c) != sat[v].end()) {
+        while (c <= max_deg + 1 && has_adj_color[v][c]) {
             ++c;
         }
         color[v] = c;
         --pending;
         
         for (int u : g.neighbors(v)) {
-            if (color[u] == 0 && sat[u].find(c) == sat[u].end()) {
-                sat[u].insert(c);
-                pq.push({(int)sat[u].size(), g.degree(u), u});
+            if (color[u] == 0 && !has_adj_color[u][c]) {
+                has_adj_color[u][c] = true;
+                sat_deg[u]++;
+                pq.push({sat_deg[u], g.degree(u), u});
             }
         }
     }
@@ -220,7 +251,8 @@ vector<int> greedy_clique(const Graph& g, int max_seeds) {
         for (int u : neighbors) {
             bool all_connected = true;
             for (int w : clique) {
-                if (g.neighbors(u).find(w) == g.neighbors(u).end()) {
+                const auto& n_u = g.neighbors(u);
+                if (std::find(n_u.begin(), n_u.end(), w) == n_u.end()) {
                     all_connected = false;
                     break;
                 }
@@ -239,13 +271,15 @@ vector<int> greedy_clique(const Graph& g, int max_seeds) {
 
 class Backtracker {
 public:
-    Backtracker(const Graph& graph, int k_val, const vector<int>& order, double timeout_s, int lower_bound, int upper_bound, const unordered_map<int, int>& upper_coloring) 
+    Backtracker(const Graph& graph, int k_val, const vector<int>& order, double timeout_s, int lower_bound, int upper_bound, const vector<int>& upper_coloring) 
         : g(graph), k(k_val), ord(order), nodes(0), found(false),
           start_time(chrono::high_resolution_clock::now()), timeout(timeout_s),
           best_k(upper_bound), best_color(upper_coloring) {
               
         n = ord.size();
-        for (int v : g.vertices()) color[v] = 0;
+        int max_id = g.max_id();
+        color.assign(max_id + 1, 0);
+        dom.assign(max_id + 1, 0);
         
         uint64_t full = ((1ULL << k) - 1) << 1;
         for (int v : g.vertices()) dom[v] = full;
@@ -307,8 +341,8 @@ public:
         return false;
     }
     
-    unordered_map<int, int> color;
-    unordered_map<int, uint64_t> dom;
+    vector<int> color;
+    vector<uint64_t> dom;
     const Graph& g;
     int k;
     const vector<int>& ord;
@@ -320,7 +354,7 @@ public:
     double timeout;
     
     int best_k;
-    unordered_map<int, int> best_color;
+    vector<int> best_color;
 };
 
 ExactResult chromatic_number(const Graph& g, int max_n, double timeout_s) {
@@ -333,9 +367,9 @@ ExactResult chromatic_number(const Graph& g, int max_n, double timeout_s) {
         return {0, {}, true, 0, 0.0, 0, 0};
     }
     
-    unordered_map<int, int> upper_coloring = dsatur(g);
+    vector<int> upper_coloring = dsatur(g);
     int upper = 0;
-    for (auto& p : upper_coloring) upper = max(upper, p.second);
+    for (int c : upper_coloring) upper = max(upper, c);
     
     vector<int> clique = greedy_clique(g);
     int lower = max((int)clique.size(), 1);
@@ -349,10 +383,11 @@ ExactResult chromatic_number(const Graph& g, int max_n, double timeout_s) {
         return {upper, upper_coloring, true, 0, get_elapsed(), lower, upper};
     }
     
-    unordered_set<int> clique_set(clique.begin(), clique.end());
+    vector<bool> clique_set(g.max_id() + 1, false);
+    for (int v : clique) clique_set[v] = true;
     vector<int> rest;
     for (int v : g.vertices()) {
-        if (clique_set.find(v) == clique_set.end()) {
+        if (!clique_set[v]) {
             rest.push_back(v);
         }
     }

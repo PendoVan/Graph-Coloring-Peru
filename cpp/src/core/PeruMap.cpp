@@ -145,7 +145,7 @@ double PeruMap::geo_distance(int a, int b) const {
     return 2.0 * 6371.0 * std::asin(std::sqrt(h));
 }
 
-std::map<int, std::vector<std::string>> PeruMap::frequency_table(const Graph& graph, const std::unordered_map<int, int>& color) const {
+std::map<int, std::vector<std::string>> PeruMap::frequency_table(const Graph& graph, const std::vector<int>& color) const {
     std::map<int, std::vector<std::string>> table;
     std::vector<int> verts = graph.vertices();
     
@@ -154,9 +154,8 @@ std::map<int, std::vector<std::string>> PeruMap::frequency_table(const Graph& gr
     });
     
     for (int v : verts) {
-        auto it = color.find(v);
-        if (it != color.end() && it->second != 0) {
-            table[it->second].push_back(graph.label(v));
+        if (v < color.size() && color[v] != 0) {
+            table[color[v]].push_back(graph.label(v));
         }
     }
     return table;

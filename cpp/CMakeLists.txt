@@ -28,6 +28,7 @@ set(GUI_SOURCES
     src/gui/DemoTab.cpp
     src/gui/BenchTab.cpp
     src/gui/DocsTab.cpp
+    src/gui/RecursosTab.cpp
 )
 
 add_executable(GraphColoringPeru
